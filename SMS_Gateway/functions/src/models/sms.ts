@@ -21,3 +21,10 @@ export interface SMSAttributes {
     timestamp: Date,
     to: string,
 }
+
+export interface SMSRecord {
+    from: string,
+    to: string,
+    id: string,
+    body: string
+}
