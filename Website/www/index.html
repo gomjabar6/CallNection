@@ -51,6 +51,22 @@
     </div>
   </footer>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDe-a4qsSYYYsbiyd4BPDASvWNcWbSYUI8",
+    authDomain: "tadhacks-2019-orlando.firebaseapp.com",
+    databaseURL: "https://tadhacks-2019-orlando.firebaseio.com",
+    projectId: "tadhacks-2019-orlando",
+    storageBucket: "tadhacks-2019-orlando.appspot.com",
+    messagingSenderId: "369803359823"
+  };
+  firebase.initializeApp(config);
+</script>
+<!-- load script.js after firebase, so we can edit database -->
+<script src="app.js"></script>
 </body>
 
 </html>
