@@ -112,3 +112,12 @@ left: 0;
 .mastfoot {
   color: rgba(255, 255, 255, .5);
 }
+
+#total-calls {
+  display: none;
+}
+#total-users {
+  margin-left: 10px;
+  font-size: 20px;
+  color: pink;
+}

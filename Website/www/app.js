@@ -6,33 +6,33 @@ var totalCalls = document.querySelector("#total-calls")
 
 console.log(totalCalls.innerHTML);
 
-function renderCafe(doc) {
-  let li = document.createElement("li");
-  let name = document.createElement("span");
-  let city = document.createElement("span");
-  let cross = document.createElement("div");
+// function renderCafe(doc) {
+//   let li = document.createElement("li");
+//   let name = document.createElement("span");
+//   let city = document.createElement("span");
+//   let cross = document.createElement("div");
 
-  console.log(db.collection("users"));
+//   console.log(db.collection("users"));
 
-  li.setAttribute("data-id", doc.id); // sets uuid
-  name.textContent = doc.data().age;
-  city.textContent = doc.data().gender;
+//   li.setAttribute("data-id", doc.id); // sets uuid
+//   name.textContent = doc.data().age;
+//   city.textContent = doc.data().gender;
 
-  li.appendChild(name);
-  li.appendChild(city);
-  li.appendChild(cross); // This "X" is the delete button
+//   li.appendChild(name);
+//   li.appendChild(city);
+//   li.appendChild(cross); // This "X" is the delete button
 
-  cafeList.appendChild(li);
+//   cafeList.appendChild(li);
 
-  // deleting data
-  cross.addEventListener("click", e => {
-    e.stopPropagation(); // optional
-    let id = e.target.parentElement.getAttribute("data-id");
-    db.collection("users")
-      .doc(id)
-      .delete();
-  });
-}
+//   // deleting data
+//   cross.addEventListener("click", e => {
+//     e.stopPropagation(); // optional
+//     let id = e.target.parentElement.getAttribute("data-id");
+//     db.collection("users")
+//       .doc(id)
+//       .delete();
+//   });
+// }
 
 /* CREATE */
 // create element and render cafe
