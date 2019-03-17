@@ -11,6 +11,9 @@ export async function getProfile(number: string): Promise<callerProfile | undefi
 
     let profile: callerProfile | undefined;
     const profileQuerySnap = await db.collection('users').where('phone', '==', number).get();
+
+    console.log('found ' + profileQuerySnap.size + ' profiels for ' + number);
+
     profileQuerySnap.forEach(doc => {
         const data = doc.data();
         profile = {
@@ -22,6 +25,7 @@ export async function getProfile(number: string): Promise<callerProfile | undefi
             gender: data.gender,
             age: data.age,
             zip: data.zipcode,
+            locName: data.locName,
         }
     })
 
@@ -37,11 +41,12 @@ export async function logCall(req: any, endpoint: string) {
     });
 }
 
-export async function AddToQueue(number: string, uuid: string) {
+export async function AddToQueue(number: string, uuid: string, name: string) {
 
     await db.collection('MatchQueue').doc().set({
         phoneNumber: number,
-        uuid: uuid
+        uuid: uuid,
+        name: name
     });
 }
 
@@ -64,13 +69,23 @@ export async function RemoveFromPending(number: string){
 
 }
 
-export async function GetPending(number: string): Promise<string>{
+export interface roomRecord {
+    uuid: string,
+    name: string
+}
+
+export async function GetPending(number: string): Promise<roomRecord>{
     const userProfileQuery = await db.collection('PendingMatch').where('phoneNumber', '==', number).get();
 
-    let room = '';
+    let room: roomRecord = {
+        uuid: '',
+        name: '',
+    };
 
     if (userProfileQuery.size > 0){
-        room = (await userProfileQuery.docs[0].data()).room;
+        var data = await userProfileQuery.docs[0].data()
+        room.uuid = data.room;
+        room.name = data.name;
     }
 
     return room;

@@ -9,6 +9,7 @@ export interface callerMatches {
     score: number,
     valid: boolean,
     uuid: string,
+    name: string,
 }
 
 export interface callerProfile {
@@ -53,7 +54,8 @@ export async function Match(number: number): Promise<callerMatches[]> {
                         phoneNumber: data.phoneNumber,
                         score: 0,
                         valid: false,
-                        uuid: data.uuid
+                        uuid: data.uuid,
+                        name: data.name,
                     });
                 }
             }
@@ -93,10 +95,11 @@ export async function Match(number: number): Promise<callerMatches[]> {
     return validMatches;
 }
 
-export async function AddToPending(number: string, room: string) {
+export async function AddToPending(number: string, room: string, connName: string) {
     await db.collection('PendingMatch').doc().set({
         phoneNumber: number,
-        room: room
+        room: room,
+        name: connName ? connName : '',
     });
 }
 
