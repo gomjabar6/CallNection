@@ -1,6 +1,7 @@
 import { SendSMS } from './helpers/sms-flowroute';
 import {https, config, firestore} from 'firebase-functions';
 import {initializeApp} from 'firebase-admin'
+import { SMSReceipt } from './models/sms';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -23,6 +24,38 @@ export const rcvSMS = https.onRequest(async (request, response) => {
     if (query.size == 0){
         await db.collection('SMSInboundQueue').doc().set(request.body);
     }
+
+});
+
+export const firstSMS = https.onRequest(async (request, response) => {
+    
+    const number = request.query['from'];
+    if (number) {
+        const newSMS: SMSReceipt = {
+            data: {
+                attributes: {
+                    amount_display: '',
+                    amount_nanodollars: '',
+                    body: 'hello',
+                    direction: 'inbound',
+                    from: request.query['from'],
+                    is_mms: false,
+                    message_callback_url: '',
+                    message_encoding: 0,
+                    status: 'delivered',
+                    timestamp: '',
+                    to: '12258001080',
+                },
+                id: 'autoGen',
+                type: 'message',
+            }
+        }
+
+        await db.collection('SMSInboundQueue').doc().set(newSMS);
+        response.send('Text Sent!');
+    }
+
+    return;
 
 });
 

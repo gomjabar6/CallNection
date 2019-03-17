@@ -1,6 +1,7 @@
 import { https } from 'firebase-functions'
 import { getProfile, logCall, AddToQueue, RemoveFromQueue, GetQueueLength, RemoveFromPending, GetPending } from './API/profiles';
 import { genders } from './genders';
+import { startText } from './API/requests';
 
 // const wavBeep = 'http://www.wavsource.com/snds_2018-06-03_5106726768923853/sfx/bloop_x.wav';
 
@@ -13,6 +14,7 @@ export interface callerProfile {
     gender: string,
     age: number,
     zip: string,
+    locName: string,
 }
 
 export const apidazeTest = https.onRequest(async (request, response) => {
@@ -48,6 +50,7 @@ export const apidazeTest = https.onRequest(async (request, response) => {
          </variables>
          <work>
           <answer/>
+          <wait>3</wait>
           <speak>Welcome to CallNection! looking up your profile.</speak>
          </work>
         </document>`
@@ -58,12 +61,18 @@ export const apidazeTest = https.onRequest(async (request, response) => {
             if (callNumber) {
                 profile = await getProfile(callNumber);
             }
-        } catch {
-    
+        } catch(ex) {
+            console.error('Error Finding', ex, profile);
         }
 
         if (profile){
-            let speakStr = 'Hello ' + profile.username + '! You are a ' + profile.age + ' year old ' + genders[profile.gender] + ' looking for a ' + genders[profile.prefGender] + ' near zipcode ' + profile.zip + '.';
+
+            let zipStr = ' zipcode ' + profile.zip + '.';
+            if (profile.locName) {
+                zipStr = ' ' + profile.locName + '.';
+            }
+
+            let speakStr = 'Hello ' + profile.username + '! You are a ' + profile.age + ' year old ' + genders[profile.gender] + ' looking for a ' + genders[profile.prefGender] + ' near ' + zipStr;
             speakStr += ' Please wait while we find you a match!';
     
             xmlStr = `<?xml version="1.0" encoding="utf-8"?>
@@ -81,17 +90,21 @@ export const apidazeTest = https.onRequest(async (request, response) => {
             await RemoveFromPending(profile.phoneNumber);
 
             // Add user to queue
-            await AddToQueue(profile.phoneNumber, request.query['uuid']);
+            await AddToQueue(profile.phoneNumber, request.query['uuid'], profile.username);
 
         } else {
             xmlStr = `<?xml version="1.0" encoding="utf-8"?>
             <document>
              <work>
               <answer/>
-              <speak>Your profile could not be found or is not complete, please send a text to this number to create a profile!</speak>
+              <speak>Your profile could not be found or is not complete, I will send you a text so you can get started!</speak>
+              <wait>1</wait>
+              <speak>Goodbye!</speak>
               <hangup/>
              </work>
             </document>`
+
+            await startText(callNumber);
         }
 
     } else {
@@ -99,17 +112,17 @@ export const apidazeTest = https.onRequest(async (request, response) => {
         let strCount = ' there is one connection being made.'
         const numConn = await GetQueueLength();
         if (numConn > 1){
-            strCount = ' there are ' + numConn + ' connections being made.'
+            strCount = ' there are ' + numConn + ' callnections waiting.'
         }
 
         // Check if pending room swith
         const room = await GetPending(callNumber);
-        if (room !== ''){
+        if (room.uuid !== ''){
             xmlStr = `<?xml version="1.0" encoding="utf-8"?>
             <document>
              <work>
-                <speak>Your CallNection was found! Please wait while I connect you.</speak>
-                <conference>` + room + `</conference>
+                <speak>Your CallNection was found! Please wait while I connect you to ` + room.name + `</speak>
+                <conference>` + room.uuid + `</conference>
              </work>
             </document>`
 

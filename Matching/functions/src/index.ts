@@ -2,7 +2,7 @@ import { firestore} from '../node_modules/firebase-functions'
 
 import rp = require('request-promise');
 import { DocumentReference } from '@google-cloud/firestore';
-import { Match, AddToPending, RemoveFromQueue } from './matching/matcher';
+import { Match, AddToPending, RemoveFromQueue, callerMatches } from './matching/matcher';
 
 exports.MatchNewCaller = firestore.document('MatchQueue/{userId}').onCreate(async (snap, context) => {
 
@@ -17,14 +17,14 @@ exports.MatchNewCaller = firestore.document('MatchQueue/{userId}').onCreate(asyn
     }
 
     //Get Match
-    const matches = await Match(newValue.phoneNumber);
+    const matches: callerMatches[] = await Match(newValue.phoneNumber);
     if (matches.length > 0){
 
         console.log('Found Matches for: ' + newValue.phoneNumber, JSON.stringify(matches));
         
         //Add Pending Match
-        await AddToPending(newValue.phoneNumber, newValue.uuid);
-        await AddToPending(matches[0].phoneNumber, newValue.uuid);
+        await AddToPending(newValue.phoneNumber, newValue.uuid, matches[0].name);
+        await AddToPending(matches[0].phoneNumber, newValue.uuid, newValue.name);
 
         //Remove from room
         await RemoveFromQueue(newValue.phoneNumber);
@@ -90,7 +90,7 @@ exports.GetLatLongNew = firestore.document('users/{userId}').onCreate(async (sna
 });
 
 async function updateZip(doc: DocumentReference, zip: string){
-    const url = 'https://www.zipcodeapi.com/rest/GaufizMLSvdzZfMvgs72U1RWprK4SZKCTKRvVYkqC2gDp1aZsoLA175LS51bQ4mn/info.json/' + zip + '/degrees'
+    const url = 'https://www.zipcodeapi.com/rest/z3T3rFtcJKmHsWADZmy5I97VIO8MpUHkrBjI0GYfM6ZYtlaPhuwcfRcxdylNJsGl/info.json/' + zip + '/degrees'
 
     const _options = {
         url: url,
@@ -103,6 +103,7 @@ async function updateZip(doc: DocumentReference, zip: string){
 
     await doc.update({
         lat: data.lat,
-        lng: data.lng
+        lng: data.lng,
+        locName: data.city
     })
 }

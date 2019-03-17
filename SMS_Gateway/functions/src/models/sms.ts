@@ -18,7 +18,7 @@ export interface SMSAttributes {
     message_callback_url: string,
     message_encoding: number,
     status: string,
-    timestamp: Date,
+    timestamp: string,
     to: string,
 }
 
