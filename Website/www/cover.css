@@ -27,7 +27,10 @@ a:hover {
 html,
 body {
   height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
   background-color: #333;
+  /*background: url(https://ak5.picdn.net/shutterstock/videos/24765065/thumb/1.jpg)*/
 }
 
 body {
@@ -48,6 +51,11 @@ body {
  */
 .masthead {
   margin-bottom: 2rem;
+}
+
+.logo{
+max-width: 40%;
+left: 0;
 }
 
 .masthead-brand {
