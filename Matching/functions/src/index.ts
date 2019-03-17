@@ -2,7 +2,7 @@ import { firestore} from '../node_modules/firebase-functions'
 
 import rp = require('request-promise');
 import { DocumentReference } from '@google-cloud/firestore';
-import { Match } from './matching/matcher';
+import { Match, AddToPending, RemoveFromQueue } from './matching/matcher';
 
 exports.MatchNewCaller = firestore.document('MatchQueue/{userId}').onCreate(async (snap, context) => {
 
@@ -21,14 +21,16 @@ exports.MatchNewCaller = firestore.document('MatchQueue/{userId}').onCreate(asyn
     if (matches.length > 0){
 
         console.log('Found Matches for: ' + newValue.phoneNumber, JSON.stringify(matches));
+        
+        //Add Pending Match
+        await AddToPending(newValue.phoneNumber, newValue.uuid);
+        await AddToPending(matches[0].phoneNumber, newValue.uuid);
 
-        // Place Call
+        //Remove from room
+        await RemoveFromQueue(newValue.phoneNumber);
+        await RemoveFromQueue(matches[0].phoneNumber)
 
-        // Once placed, removed users from queue
-
-        // If not placed, call next
     }
-
 
 });
 
