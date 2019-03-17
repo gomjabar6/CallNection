@@ -26,6 +26,7 @@ export async function getProfile(number: string): Promise<callerProfile | undefi
             age: data.age,
             zip: data.zipcode,
             locName: data.locName,
+            state: data.state,
         }
     })
 
