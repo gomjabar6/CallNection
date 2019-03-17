@@ -8,8 +8,8 @@ function renderCafe(doc) {
     let cross = document.createElement("div");
   
     li.setAttribute("data-id", doc.id); // sets uuid
-    name.textContent = doc.data().name;
-    city.textContent = doc.data().city;
+    name.textContent = doc.data().age;
+    city.textContent = doc.data().gender;
   
     li.appendChild(name);
     li.appendChild(city);
@@ -21,7 +21,7 @@ function renderCafe(doc) {
     cross.addEventListener("click", e => {
       e.stopPropagation(); // optional
       let id = e.target.parentElement.getAttribute("data-id");
-      db.collection("cafes")
+      db.collection("users")
         .doc(id)
         .delete();
     });
@@ -29,8 +29,8 @@ function renderCafe(doc) {
 
 /* CREATE */
 // create element and render cafe
-db.collection("cafes")
-  .orderBy("city")
+db.collection("users")
+//   .orderBy("city")
   .onSnapshot(snapshot => {
     let changes = snapshot.docChanges();
     changes.forEach(change => {
@@ -44,12 +44,12 @@ db.collection("cafes")
   });
 
   /* saving data */
-form.addEventListener("submit", e => {
-    e.preventDefault();
-    db.collection("cafes").add({
-      name: form.name.value,
-      city: form.city.value
-    });
-    form.name.value = "";
-    form.city.value = "";
-  });
+// form.addEventListener("submit", e => {
+//     e.preventDefault();
+//     db.collection("cafes").add({
+//       name: form.name.value,
+//       city: form.city.value
+//     });
+//     form.name.value = "";
+//     form.city.value = "";
+//   });

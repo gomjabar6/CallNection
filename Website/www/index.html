@@ -24,6 +24,7 @@
       }
     </style>
     <link href="cover.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
 </head>
 
 <body class="text-center">
@@ -50,6 +51,8 @@
     <input type="text" name="city" placeholder="Cafe city" />
     <button>Add Cafe</button>
   </form>
+  <ul id="cafe-list"></ul>
+
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
@@ -58,7 +61,6 @@
   </footer>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
 <script>
   // Initialize Firebase
   var config = {
@@ -70,6 +72,8 @@
     messagingSenderId: "369803359823"
   };
   firebase.initializeApp(config);
+  const db = firebase.firestore();
+  db.settings({ timestampsInSnapshots: true });
 </script>
 <!-- load script.js after firebase, so we can edit database -->
 <script src="app.js"></script>
