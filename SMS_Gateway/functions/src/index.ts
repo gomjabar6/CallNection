@@ -16,7 +16,13 @@ export const rcvSMS = https.onRequest(async (request, response) => {
     console.log(request.body);
     //response.send("Hello from Firebase!");
 
-    await db.collection('SMSInboundQueue').doc().set(request.body);
+    // Look for exisitng
+    const id = request.body.data.id;
+    const query = await db.collection('SMSInboundQueue').where('data.id', '==', id).get();
+
+    if (query.size == 0){
+        await db.collection('SMSInboundQueue').doc().set(request.body);
+    }
 
 });
 
