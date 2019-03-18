@@ -144,8 +144,7 @@ export const apidazeTest = https.onRequest(async (request, response) => {
             </variables>
             <work>
             <answer/>
-            <playback file="http://filebin.net/g6mmhknoj8l8najh/callnection.wav?t=w5eko11u"/>
-            <wait>1</wait>
+            <wait>15</wait>
             <speak>Still looking for your perfect CallNection,` + strCount + `</speak>
             </work>
             </document>`
